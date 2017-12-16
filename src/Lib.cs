@@ -1499,9 +1499,35 @@ public static class Lib
     }
   }
 
-  #endregion
+    #endregion
 
-  public static class Parse
+  #region K_CommNet
+  public static Vessel CommNodeToVessel(CommNet.CommNode node)
+  {
+    foreach (Vessel w in FlightGlobals.Vessels)
+    {
+      if (!IsVessel(w)) continue;
+
+      if (node == w.connection.Comm)
+      {
+        return w;
+      }
+    }
+    foreach (Vessel w in FlightGlobals.Vessels)
+    {
+      if (!IsVessel(w)) continue;
+
+      if (node.position == w.connection.Comm.position)
+      {
+        return w;
+      }
+    }
+
+    Log("The node " + node.name + " is not valid.");
+    return null;
+  }
+  #endregion
+    public static class Parse
   {
     public static bool ToBool(string s, bool def_value = false)
     {
