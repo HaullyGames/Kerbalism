@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 namespace KCOMMNET
 {
+  // Original code by TaxiService from https://github.com/KSP-TaxiService/CommNetConstellation
+  // CNConstellationAntennaModule
   public class NetworkAdaptor : PartModule
   {
-    [KSPField] public uint vlan = 0;                            // What is the lan that this will communicate
+    [KSPField(isPersistant = true)] public uint frequency;
     [KSPField] public double ecCost;                            // cost of transmission in EC/s
     [KSPField] public double rate;                              // transmission rate at zero distance in Mb/s
-    public Guid Target;
+    public Guid Target = Guid.Empty;
 
-    [KSPEvent(guiActive = true, guiActiveEditor = true, guiActiveUnfocused = true, guiName = "Network Adaptor Setup", active = true)]
+    [KSPEvent(guiActive = true, guiActiveEditor = true, guiActiveUnfocused = true, guiName = "Antenna Setup", active = true)]
     public void KSPEventAntennaConfig()
     {
       // NEED IMPLEMENT

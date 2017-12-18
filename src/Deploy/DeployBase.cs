@@ -14,7 +14,8 @@ namespace KERBALISM
     [KSPField(guiName = "EC Usage", guiUnits = "/sec", guiActive = true, guiFormat = "F2")]
     public double actualECCost = 0;                                           // Show EcConsume on part display
 
-    [KSPField(isPersistant = true)] public bool isActionGroupchanged;         // actionGroup was change by DeploySystem?
+    [KSPField(isPersistant = true)] 
+    public bool isActionGroupchanged;                                         // actionGroup was changed by DeploySystem?
 
     public PartModule pModule;
     public string Action;

@@ -6,7 +6,7 @@ using KERBALISM;
 // Original code by TaxiService from https://github.com/KSP-TaxiService/CommNetConstellation
 namespace KCOMMNET
 {
-  public class K_CommNetVessel : CommNetVessel //, IPersistenceSave, IPersistenceLoad
+  public class KCommNetVessel : CommNetVessel //, IPersistenceSave, IPersistenceLoad
   {
     public enum FrequencyListOperation
     {
@@ -28,11 +28,26 @@ namespace KCOMMNET
     protected override void OnNetworkInitialized()
     {
       base.OnNetworkInitialized();
+      try
+      {
+        // NEED IMPLEMENT
+
+        GameEvents.onStageActivate.Add(stageActivate);
+      }
+      catch (Exception e)
+      {
+        Lib.Log("Vessel " + this.Vessel.GetName() + " doesn't have any CommNet capability, likely a mislabelled junk or a kerbin on EVA");
+        Lib.Log("Error Message: " + e.Message);
+      }
     }
 
     protected override void OnDestroy()
     {
       base.OnDestroy();
+      if (HighLogic.CurrentGame == null) return;
+
+      GameEvents.onStageActivate.Remove(stageActivate);
+      // NEED IMPLEMENT
     }
 
     // GameEvent of staging a vessel
@@ -44,6 +59,18 @@ namespace KCOMMNET
       }
     }
 
+    // GameEvent of vessel being modified: Decouple event
+    private void vesselModified(Vessel thisVessel)
+    {
+      if (this.Vessel.isActiveVessel && this.stageActivated)
+      {
+        Lib.Log("Active CommNet Vessel " + this.Vessel.vesselName + " is staged. Rebuilding the freq list on suriving antennas...");
+
+        // NEED IMPLEMENT
+
+        this.stageActivated = false;
+      }
+    }
     //public void PersistenceSave()
     //{
     //  List<short> keys = new List<short>();

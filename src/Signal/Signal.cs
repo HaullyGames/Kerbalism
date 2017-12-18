@@ -296,7 +296,7 @@ public static class Signal
     // if CommNet is enabled
     else if (Features.KCommNet)
     {
-      return v.connection != null && v.connection.IsConnected
+      return v.connection != null && v.connection.IsConnected // (v.connection.IsConnected && v.connection.IsConnected) These are wrong, they are not the current value, these values are Cache value.
       ? new ConnectionInfo(LinkStatus.direct_link, ext_rate * v.connection.SignalStrength, ext_cost)
       : new ConnectionInfo(LinkStatus.no_link);
     }
