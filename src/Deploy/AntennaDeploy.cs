@@ -3,6 +3,7 @@
   // This class will support two signal system (Kerbalism Signal & CommNet)
   public class AntennaDeploy : DeployBase
   {
+    // This module is always exist in part that has Antenna Or ModuleDataTransmitter
     Antenna antenna;
     ModuleAnimationGroup customAnim;
 
@@ -34,7 +35,7 @@
       {
         if (customAnim != null) pModule = customAnim;
       }
-      else if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+      else if (Features.KCommNet)
       {
         if (stockAnim != null) pModule = stockAnim;
       }
@@ -44,14 +45,14 @@
 
     public override void Update()
     {
-      if (Lib.IsFlight() && Features.Signal && Features.Deploy)
+      if (Lib.IsFlight() && Features.Deploy)
       {
         // Check if it is transmitting
-        if (!Features.Science)
+        if (!Features.Science && Features.Signal)
         {
           if (antenna != null) isTransmitting = antenna.stream.transmitting();
         }
-        else
+        else if(Features.Science)
         {
           // get info from the cache
           vessel_info vi = Cache.VesselInfo(vessel);
@@ -62,7 +63,11 @@
         base.Update();
         if (isTransmitting)
         {
-          actualECCost = antenna.cost;
+          if (Features.Signal) actualECCost = antenna.cost;
+          else if (Features.KCommNet)
+          {
+            actualECCost = part.FindModuleImplementing<KCOMMNET.NetworkAdaptor>().ecCost;
+          }
           // Kerbalism already has logic to consume EC when it is transmitting
           isConsuming = false;
         }
@@ -130,7 +135,7 @@
             return false;
           }
         }
-        else if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+        else if (Features.KCommNet)
         {
           // Just making sure that we have the target module
           if (transmitter == null) return false;
@@ -173,9 +178,8 @@
             }
             else
             {
-              ToggleActions(stockAnim, hasEC);
               // Recover antennaPower for fixed antenna
-              transmitter.antennaPower = antenna.dist;
+              transmitter.antennaPower = rightDistValue;
               actualECCost = ecCost;
               return true;
             }
@@ -226,7 +230,7 @@
               ec.Consume(Lib.Proto.GetDouble(deployModule, "ecCost") * elapsed_s);
             }
           }
-          else if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+          else if (Features.KCommNet)
           {
             anim = p.FindModule("ModuleDeployableAntenna");
             if (anim != null) isDeploy = Lib.Proto.GetString(anim, "deployState") == "EXTENDED";
@@ -245,7 +249,7 @@
           {
             Lib.Proto.Set(antenna, "extended", false);
           }
-          else if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+          else if (Features.KCommNet)
           {
             Lib.Proto.Set(antenna, "canComm", false);
           }

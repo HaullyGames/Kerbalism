@@ -10,16 +10,18 @@ public static class Features
   public static void detect()
   {
     // set user-specified features
-    Reliability = Settings.Reliability;
-    Signal = Settings.Signal;
-    Deploy = Settings.Deploy;
-    Science = Settings.Science;
-    SpaceWeather = Settings.SpaceWeather;
-    Automation = Settings.Automation;
+    Reliability   = Settings.Reliability;
+    Signal        = Settings.Signal;
+    KCommNet      = Settings.KCommNet && !Settings.Signal;
+    Deploy        = Settings.Deploy;
+    Science       = Settings.Science;
+    SpaceWeather  = Settings.SpaceWeather;
+    Automation    = Settings.Automation;
 
     // force-disable some features based on mods detected
     Reliability &= !Lib.HasAssembly("TestFlight");
-    Signal &= !Lib.HasAssembly("RemoteTech");
+    Signal      &= !Lib.HasAssembly("RemoteTech");
+    KCommNet    &= !Signal;
 
     // detect all modifiers in use by current profile
     HashSet<string> modifiers = new HashSet<string>();
@@ -33,12 +35,12 @@ public static class Features
     }
 
     // detect features from modifiers
-    Radiation = modifiers.Contains("radiation");
-    Shielding = modifiers.Contains("shielding");
+    Radiation   = modifiers.Contains("radiation");
+    Shielding   = modifiers.Contains("shielding");
     LivingSpace = modifiers.Contains("living_space");
-    Comfort = modifiers.Contains("comfort");
-    Poisoning = modifiers.Contains("poisoning");
-    Pressure = modifiers.Contains("pressure");
+    Comfort     = modifiers.Contains("comfort");
+    Poisoning   = modifiers.Contains("poisoning");
+    Pressure    = modifiers.Contains("pressure");
 
     // habitat is enabled if any of the values it provides are in use
     Habitat =
@@ -56,6 +58,7 @@ public static class Features
     Lib.Log("features:");
     Lib.Log("- Reliability: " + Reliability);
     Lib.Log("- Signal: " + Signal);
+    Lib.Log("- KCommNet: " + KCommNet);
     Lib.Log("- Deploy: " + Deploy);
     Lib.Log("- Science: " + Science);
     Lib.Log("- SpaceWeather: " + SpaceWeather);
@@ -73,6 +76,7 @@ public static class Features
   // user-specified features
   public static bool Reliability;
   public static bool Signal;
+  public static bool KCommNet;
   public static bool Deploy;
   public static bool Science;
   public static bool SpaceWeather;

@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using UnityEngine;
+using CommNet;
 
 
 namespace KERBALISM {
@@ -1502,32 +1503,68 @@ public static class Lib
     #endregion
 
   #region K_CommNet
-  public static Vessel CommNodeToVessel(CommNet.CommNode node)
-  {
-    foreach (Vessel w in FlightGlobals.Vessels)
+  public static class KCOMMNET
+  { 
+    public static Vessel CommNodeToVessel(CommNode node)
     {
-      if (!IsVessel(w)) continue;
+      // Is is home return null
+      if (node.isHome) return null;
 
-      if (node == w.connection.Comm)
+      foreach (Vessel w in FlightGlobals.Vessels)
       {
-        return w;
+        if (!IsVessel(w)) continue;
+
+        if(AreSame(node, w.connection.Comm))
+        { 
+          return w;
+        }
       }
+
+      Log("The node " + node.name + " is not valid.");
+      return null;
     }
-    foreach (Vessel w in FlightGlobals.Vessels)
+
+    // Original code by TaxiService from https://github.com/KSP-TaxiService/CommNetConstellation
+    public static bool AreSame(CommNode a, CommNode b)
     {
-      if (!IsVessel(w)) continue;
-
-      if (node.position == w.connection.Comm.position)
+      if (a == null || b == null)
       {
-        return w;
+        return false;
       }
+
+      return a.precisePosition == b.precisePosition;
     }
 
-    Log("The node " + node.name + " is not valid.");
-    return null;
+    /// <summary>
+    /// Cursor detection within the given window
+    /// </summary>
+    public static bool ContainsMouse(Rect window)
+    {
+      return window.Contains(new Vector2(Input.mousePosition.x,
+          Screen.height - Input.mousePosition.y));
+    }
+
+    public static double NonLinqSum(List<double> list)
+    {
+      double sum = 0.0;
+      for (int i = 0; i < list.Count; i++)
+        sum += list[i];
+      return sum;
+    }
+
+    public static double NonLinqMax(List<double> list)
+    {
+      double max = 0.0;
+      for (int i = 0; i < list.Count; i++)
+      {
+        if (max < list[i])
+            max = list[i];
+      }
+      return max;
+    }
   }
   #endregion
-    public static class Parse
+  public static class Parse
   {
     public static bool ToBool(string s, bool def_value = false)
     {

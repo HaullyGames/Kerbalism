@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using CommNet;
+using System.Linq;
+using UniLinq;
 
 namespace KERBALISM {
 
@@ -11,7 +13,7 @@ public static class Signal
   public static ConnectionInfo connection(Vessel v, Vector3d position, AntennaInfo antenna, bool blackout, HashSet<Guid> avoid_inf_recursion)
   {
     // if signal mechanic is disabled, use RemoteTech/CommNet/S4
-    if (!Features.Signal) return OtherComms(v);
+    if (!Features.Signal) return OtherComms(v, antenna, avoid_inf_recursion);
 
     // if it has no antenna
     if (antenna.no_antenna) return new ConnectionInfo(LinkStatus.no_antenna);
@@ -278,7 +280,7 @@ public static class Signal
   }
 
 
-  static ConnectionInfo OtherComms(Vessel v)
+  static ConnectionInfo OtherComms(Vessel v, AntennaInfo antenna, HashSet<Guid> avoid_inf_recursion)
     {
     // hard-coded transmission rate and cost
     const double ext_rate = 0.064;
@@ -292,11 +294,11 @@ public static class Signal
         : new ConnectionInfo(LinkStatus.no_link);
     }
     // if CommNet is enabled
-    else if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+    else if (Features.KCommNet)
     {
       return v.connection != null && v.connection.IsConnected
-        ? new ConnectionInfo(LinkStatus.direct_link, ext_rate * v.connection.SignalStrength, ext_cost)
-        : new ConnectionInfo(LinkStatus.no_link);
+      ? new ConnectionInfo(LinkStatus.direct_link, ext_rate * v.connection.SignalStrength, ext_cost)
+      : new ConnectionInfo(LinkStatus.no_link);
     }
     // the simple stupid signal system
     else

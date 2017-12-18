@@ -70,7 +70,9 @@ public static class Icons
 
   public static Texture plant_white= Lib.GetTexture("plant-white");
   public static Texture plant_yellow= Lib.GetTexture("plant-yellow");
-}
+
+  public static Texture home = Lib.GetTexture("sun-white");
+  }
 
 
 } // KERBALISM

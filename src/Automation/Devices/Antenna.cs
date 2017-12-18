@@ -30,13 +30,13 @@ public sealed class AntennaDevice : Device
 
   public override uint part()
   {
-    if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet) return transmitter.part.flightID;
+    if (Features.KCommNet) return transmitter.part.flightID;
     else return antenna.part.flightID;
   }
 
   public override string info()
   {
-    if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+    if (Features.KCommNet)
     {
       return stockAnim == null
         ? "fixed"
@@ -65,7 +65,7 @@ public sealed class AntennaDevice : Device
       if (!has_ec) return;
     }
 
-    if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+    if (Features.KCommNet)
     {
       if (stockAnim.deployState != ModuleDeployablePart.DeployState.EXTENDED && value) stockAnim.Extend();
       else if (stockAnim.deployState == ModuleDeployablePart.DeployState.EXTENDED && !value) stockAnim.Retract();
@@ -79,7 +79,7 @@ public sealed class AntennaDevice : Device
 
   public override void toggle()
   {
-    if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+    if (Features.KCommNet)
     {
       if (stockAnim.deployState != ModuleDeployablePart.DeployState.EXTENDED) ctrl(true);
       else if (stockAnim.deployState == ModuleDeployablePart.DeployState.EXTENDED) ctrl(false);
@@ -104,7 +104,7 @@ public sealed class ProtoAntennaDevice : Device
     if (!Features.Deploy) has_ec = true;
     else has_ec = ResourceCache.Info(v, "ElectricCharge").amount > double.Epsilon;
 
-    if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+    if (Features.KCommNet)
     {
       this.antenna = FlightGlobals.FindProtoPartByID(part_id).FindModule("ModuleDataTransmitter");
       this.animator = FlightGlobals.FindProtoPartByID(part_id).FindModule("ModuleDeployableAntenna");
@@ -130,7 +130,7 @@ public sealed class ProtoAntennaDevice : Device
 
   public override string info()
   {
-    if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+    if (Features.KCommNet)
       return animator == null
        ? "fixed"
        : Lib.Proto.GetString(animator, "deployState") == "EXTENDED"
@@ -157,7 +157,7 @@ public sealed class ProtoAntennaDevice : Device
 
     if (animator != null)
     {
-      if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet)
+      if (Features.KCommNet)
       {
         string status = value ? "EXTENDED" : "RETRACTED";
         Lib.Proto.Set(antenna, "canComm", value);
@@ -175,7 +175,7 @@ public sealed class ProtoAntennaDevice : Device
   {
     if (animator != null)
     {
-      if (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet) ctrl(Lib.Proto.GetString(animator, "deployState") == "RETRACTED");
+      if (Features.KCommNet) ctrl(Lib.Proto.GetString(animator, "deployState") == "RETRACTED");
       else ctrl(!Lib.Proto.GetBool(antenna, "extended"));
     }
   }
