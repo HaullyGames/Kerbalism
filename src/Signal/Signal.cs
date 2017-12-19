@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CommNet;
-using System.Linq;
-using UniLinq;
 
 namespace KERBALISM {
 
@@ -151,7 +149,6 @@ public static class Signal
     return string.Empty;
   }
 
-
   public static void update(Vessel v, vessel_info vi, VesselData vd, double elapsed_s)
   {
     // do nothing if signal mechanic is disabled
@@ -195,7 +192,6 @@ public static class Signal
       }
     }
   }
-
 
   public static void render()
   {
@@ -279,7 +275,6 @@ public static class Signal
     }
   }
 
-
   static ConnectionInfo OtherComms(Vessel v, AntennaInfo antenna, HashSet<Guid> avoid_inf_recursion)
     {
     // hard-coded transmission rate and cost
@@ -289,7 +284,9 @@ public static class Signal
     // if RemoteTech is present and enabled
     if (RemoteTech.Enabled())
     {
-      return RemoteTech.Connected(v.id)
+        CommNetNetwork net = UnityEngine.Object.FindObjectOfType<CommNetNetwork>();
+
+        return RemoteTech.Connected(v.id)
         ? new ConnectionInfo(LinkStatus.direct_link, ext_rate, ext_cost)
         : new ConnectionInfo(LinkStatus.no_link);
     }

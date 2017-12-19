@@ -1535,9 +1535,7 @@ public static class Lib
       return a.precisePosition == b.precisePosition;
     }
 
-    /// <summary>
-    /// Cursor detection within the given window
-    /// </summary>
+    // Cursor detection within the given window
     public static bool ContainsMouse(Rect window)
     {
       return window.Contains(new Vector2(Input.mousePosition.x,

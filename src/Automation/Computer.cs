@@ -307,7 +307,8 @@ public sealed class Computer
             case "Emitter":                       dev = new ProtoEmitterDevice(m, p.flightID);                                              break;
             case "Harvester":                     dev = new ProtoHarvesterDevice(m, module_prefab as Harvester, p.flightID);                break;
             case "Laboratory":                    dev = new ProtoLaboratoryDevice(m, p.flightID);                                           break;
-            case "Antenna":                       dev = new ProtoAntennaDevice(m, p.flightID, v);                                              break;
+            case "Antenna":                       dev = new ProtoAntennaDevice(m, p.flightID, v);                                           break;
+            case "ModuleDataTransmitter":         dev = new ProtoAntennaDevice(m, p.flightID, v);                                           break;
             case "Experiment":                    dev = new ProtoExperimentDevice(m, module_prefab as Experiment, p.flightID);              break;
             case "ModuleDeployableSolarPanel":    dev = new ProtoPanelDevice(m, module_prefab as ModuleDeployableSolarPanel, p.flightID);   break;
             case "ModuleGenerator":               dev = new ProtoGeneratorDevice(m, module_prefab as ModuleGenerator, p.flightID);          break;

@@ -25,20 +25,37 @@ namespace KCOMMNET
     protected bool stageActivated = false;
 
     // Retrieve the CNC data from the vessel
-    protected override void OnNetworkInitialized()
-    {
-      base.OnNetworkInitialized();
-      try
-      {
-        // NEED IMPLEMENT
+    //protected override void OnNetworkInitialized()
+    //{
+    //  base.OnNetworkInitialized();
+    //  try
+    //  {
+    //    // NEED IMPLEMENT
 
-        GameEvents.onStageActivate.Add(stageActivate);
-      }
-      catch (Exception e)
-      {
-        Lib.Log("Vessel " + this.Vessel.GetName() + " doesn't have any CommNet capability, likely a mislabelled junk or a kerbin on EVA");
-        Lib.Log("Error Message: " + e.Message);
-      }
+    //    GameEvents.onStageActivate.Add(stageActivate);
+    //  }
+    //  catch (Exception e)
+    //  {
+    //    Lib.Log("Vessel " + this.Vessel.GetName() + " doesn't have any CommNet capability, likely a mislabelled junk or a kerbin on EVA");
+    //    Lib.Log("Error Message: " + e.Message);
+    //  }
+    //}
+
+    //public override void OnNetworkPreUpdate()
+    //{
+    //  if (vessel.loaded  || !vessel.loaded || overridePreUpdate)
+    //  {
+    //    UpdateComm();
+    //    CalculatePlasmaMult();
+    //  }
+    //  else
+    //    inPlasma = false;
+    //  comm.precisePosition = vessel.GetWorldPos3D();
+    //}
+
+    protected override void UpdateComm()
+    {
+      base.UpdateComm();
     }
 
     protected override void OnDestroy()
@@ -47,6 +64,7 @@ namespace KCOMMNET
       if (HighLogic.CurrentGame == null) return;
 
       GameEvents.onStageActivate.Remove(stageActivate);
+      GameEvents.onVesselWasModified.Remove(vesselModified);
       // NEED IMPLEMENT
     }
 
@@ -71,32 +89,5 @@ namespace KCOMMNET
         this.stageActivated = false;
       }
     }
-    //public void PersistenceSave()
-    //{
-    //  List<short> keys = new List<short>();
-    //  var keyItr = FrequencyDict.Keys.GetEnumerator();
-    //  while (keyItr.MoveNext())
-    //  {
-    //    keys.Add(keyItr.Current);
-    //  }
-    //  FreqDictionaryKeys = keys;
-
-    //  List<double> values = new List<double>();
-    //  var valueItr = FrequencyDict.Values.GetEnumerator();
-    //  while (valueItr.MoveNext())
-    //  {
-    //    values.Add(valueItr.Current);
-    //  }
-    //  FreqDictionaryValues = values;
-    //}
-
-    //public void PersistenceLoad()
-    //{
-    //  FrequencyDict = new Dictionary<short, double>();
-    //  for (int i = 0; i < FreqDictionaryKeys.Count; i++)
-    //  {
-    //    FrequencyDict.Add(FreqDictionaryKeys[i], FreqDictionaryValues[i]);
-    //  }
-    //}
   }
 }

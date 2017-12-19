@@ -1,10 +1,7 @@
 ﻿using CommNet;
-using CommNet.Network;
-using KSP.Localization;
 using KSP.UI.Screens.Mapview;
 using System.Collections.Generic;
 using UnityEngine;
-using Vectrosity;
 
 // Original code by TaxiService from https://github.com/KSP-TaxiService/CommNetConstellation
 namespace KCOMMNET
@@ -30,21 +27,8 @@ namespace KCOMMNET
     // Run own display updates
     protected override void UpdateDisplay()
     {
-      //base.UpdateDisplay();       // Testing, updateView already do all the same of UpdateDisplay(). but updateView has support to custom color line
+      base.UpdateDisplay();
       updateView();
-    }
-
-    // Maybe I will use this method
-    // TODO: when vessel is transmitting, line will have a special effect
-    protected override void CreateLine(ref VectorLine l, List<Vector3> points)
-    {
-      if (l != null)
-        VectorLine.Destroy(ref l);
-      l = new VectorLine("CommNetUIVectorLine", points, lineWidth2D, LineType.Discrete);
-      l.rectTransform.gameObject.layer = 31;
-      l.material = lineMaterial;
-      l.smoothColor = smoothColor;
-      l.UpdateImmediate = true;
     }
 
     // Register own callbacks
@@ -80,62 +64,14 @@ namespace KCOMMNET
 
       if (thisVessel != null && node.mapObject.type == MapObject.ObjectType.Vessel)
       {
-        if (thisVessel.getStrongestFrequency() < 0)   // blind vessel
-          iconData.color = Color.grey;
-        else
-          iconData.color = Constellation.getColor(thisVessel.getStrongestFrequency());
+        iconData.color = colorHigh;
       }
-    }
-
-    // Compute the color based on the connection between two nodes
-    private Color getConstellationColor(CommNode a, CommNode b)
-    {
-      //Assume the connection between A and B passes the check test
-      List<short> commonFreqs = Constellation.NonLinqIntersect(KCommNetScenario.Instance.getFrequencies(a), KCommNetScenario.Instance.getFrequencies(b));
-      IRangeModel rangeModel = KCommNetScenario.RangeModel;
-      short strongestFreq = -1;
-      double longestRange = 0.0;
-
-      for (int i = 0; i < commonFreqs.Count; i++)
-      {
-        short thisFreq = commonFreqs[i];
-        double thisRange = rangeModel.GetMaximumRange(KCommNetScenario.Instance.getCommPower(a, thisFreq), KCommNetScenario.Instance.getCommPower(b, thisFreq));
-
-        if (thisRange > longestRange)
-        {
-          longestRange = thisRange;
-          strongestFreq = thisFreq;
-        }
-      }
-
-      return Constellation.getColor(strongestFreq);
     }
 
     //  Render the CommNet presentation
     //  This method has been created to modify line color
     private void updateView()
     {
-      if (FlightGlobals.ActiveVessel == null) useTSBehavior = true;
-      else
-      {
-        useTSBehavior = false;
-        vessel = FlightGlobals.ActiveVessel;
-      }
-      if (vessel == null || vessel.connection == null || vessel.connection.Comm.Net == null)
-      {
-        useTSBehavior = true;
-        if (ModeTrackingStation != DisplayMode.None)
-        {
-          if (ModeTrackingStation != DisplayMode.Network)
-            ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_118264", new string[1]
-            {
-              Localizer.Format(DisplayMode.Network.displayDescription())
-            }), 5f);
-          ModeTrackingStation = DisplayMode.Network;
-        }
-      }
-      if (CommNetNetwork.Instance == null) return;
-
       CommNetwork net = CommNetNetwork.Instance.CommNet;
       CommNetVessel cnvessel = null;
       CommNode node = null;
@@ -219,11 +155,10 @@ namespace KCOMMNET
           case DisplayMode.FirstHop:
           {
             float lvl = Mathf.Pow((float)path.First.signalStrength, colorLerpPower);
-            //  Color customHighColor = getConstellationColor(path.First.a, path.First.b);//  If I need custom color line
             if (swapHighLow)
               line.SetColor(Color.Lerp(colorHigh, colorLow, lvl), 0);                     //  If want custom color, alter colorHigh for customHighColor
             else
-              line.SetColor(Color.Lerp(this.colorLow, colorHigh, lvl), 0);                //  If want custom color, alter colorHigh for customHighColor
+              line.SetColor(Color.Lerp(colorLow, colorHigh, lvl), 0);                //  If want custom color, alter colorHigh for customHighColor
             break;
           }
 
@@ -232,12 +167,11 @@ namespace KCOMMNET
             int linkIndex = numLinks;
             for (int i = linkIndex - 1; i >= 0; i--)
             {
-              float lvl = Mathf.Pow((float)path[i].signalStrength, this.colorLerpPower);
-              //  Color customHighColor = getConstellationColor(path[i].a, path[i].b);    //  If I need custom color line
-              if (this.swapHighLow)
-                this.line.SetColor(Color.Lerp(colorHigh, this.colorLow, lvl), i);         //  If want custom color, alter colorHigh for customHighColor
+              float lvl = Mathf.Pow((float)path[i].signalStrength, colorLerpPower);
+              if (swapHighLow)
+                this.line.SetColor(Color.Lerp(colorHigh, colorLow, lvl), i);         //  If want custom color, alter colorHigh for customHighColor
               else
-                this.line.SetColor(Color.Lerp(this.colorLow, colorHigh, lvl), i);         //  If want custom color, alter colorHigh for customHighColor
+                line.SetColor(Color.Lerp(colorLow, colorHigh, lvl), i);         //  If want custom color, alter colorHigh for customHighColor
             }
             break;
           }
@@ -250,7 +184,6 @@ namespace KCOMMNET
             {
               CommLink link = itr.Current;
               float lvl = Mathf.Pow((float)link.GetSignalStrength(link.a != node, link.b != node), colorLerpPower);
-              //  Color customHighColor = getConstellationColor(link.a, link.b);          //  To custom color line
               if (swapHighLow)
                 line.SetColor(Color.Lerp(colorHigh, colorLow, lvl), linkIndex++);
               else
@@ -265,9 +198,6 @@ namespace KCOMMNET
             while (linkIndex-- > 0)
             {
               CommLink commLink = net.Links[linkIndex];
-              //float f = (float)net.Links[i].GetBestSignal();
-              //float t = Mathf.Pow(f, this.colorLerpPower);
-              //Color customHighColor = getConstellationColor(commLink.a, commLink.b);    //  To custom color line
               float t2 = Mathf.Pow((float)net.Links[linkIndex].GetBestSignal(), colorLerpPower);
               if (swapHighLow)
                 line.SetColor(Color.Lerp(colorHigh, colorLow, t2), linkIndex);            //  If want custom color, alter colorHigh for customHighColor
