@@ -61,7 +61,7 @@ public static class VesselConfig
       p.content("supply", string.Empty, tooltip);
       p.icon(vd.cfg_supply ? Icons.toggle_green : Icons.toggle_red, tooltip, () => p.toggle(ref vd.cfg_supply));
     }
-    if (Features.Signal)
+    if (Features.Signal || Features.KCommNet)
     {
       tooltip = "Receive a message when signal is lost or obtained";
       p.content("signal", string.Empty, tooltip);

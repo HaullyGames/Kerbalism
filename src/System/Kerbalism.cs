@@ -281,6 +281,9 @@ public sealed class Kerbalism : ScenarioModule
   // note: stored here to avoid converting it to double every time
   public static double elapsed_s;
 
+  // CommNetwork
+  public static CommNetwork KCommNet;
+
   // number of steps from last warp blending
   public static uint warp_blending;
 

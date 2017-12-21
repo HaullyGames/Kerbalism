@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using CommNet;
+using KCOMMNET;
 
 namespace KERBALISM {
 
@@ -152,7 +152,7 @@ public static class Signal
   public static void update(Vessel v, vessel_info vi, VesselData vd, double elapsed_s)
   {
     // do nothing if signal mechanic is disabled
-    if (!Features.Signal) return;
+    if (!Features.Signal && !Features.KCommNet) return;
 
     // get connection info
     ConnectionInfo conn = vi.connection;
@@ -284,18 +284,63 @@ public static class Signal
     // if RemoteTech is present and enabled
     if (RemoteTech.Enabled())
     {
-        CommNetNetwork net = UnityEngine.Object.FindObjectOfType<CommNetNetwork>();
-
-        return RemoteTech.Connected(v.id)
-        ? new ConnectionInfo(LinkStatus.direct_link, ext_rate, ext_cost)
-        : new ConnectionInfo(LinkStatus.no_link);
+      return RemoteTech.Connected(v.id)
+      ? new ConnectionInfo(LinkStatus.direct_link, ext_rate, ext_cost)
+      : new ConnectionInfo(LinkStatus.no_link);
     }
     // if CommNet is enabled
     else if (Features.KCommNet)
     {
-      return v.connection != null && v.connection.IsConnected // (v.connection.IsConnected && v.connection.IsConnected) These are wrong, they are not the current value, these values are Cache value.
-      ? new ConnectionInfo(LinkStatus.direct_link, ext_rate * v.connection.SignalStrength, ext_cost)
-      : new ConnectionInfo(LinkStatus.no_link);
+      // if it has no antenna
+      if (antenna.no_antenna) return new ConnectionInfo(LinkStatus.no_antenna);
+
+      // store template CommNetVessel to modify
+      KCommNetVessel vessel = (KCommNetVessel)v.connection;
+
+      // Update ControlStatus every NetWorkingUpdate for all vessels
+      vessel.UpdateControl(true);
+
+      bool visible;
+
+      // store other data
+      double rate;
+      List<ConnectionInfo> connections = new List<ConnectionInfo>();
+
+      rate = antenna.direct_rate_KCommNet(vessel.SignalStrength);
+
+      // IsConnected = Can be CommandControl or can be Home
+      if (vessel.IsConnected)
+      {
+        ConnectionInfo conn;
+        if (v.connection.ControlPath.First.end.isHome)
+        {
+          conn = new ConnectionInfo(LinkStatus.direct_link, rate, antenna.direct_cost, antenna.indirect_cost);
+          connections.Add(conn);
+        }
+        else
+        {
+          Vessel w = Lib.KCOMMNET.CommNodeToVessel(v.connection.ControlPath.First.end);
+
+          vessel_info wi;
+          if (!Cache.HasVesselInfo(w, out wi))
+          {
+            wi = new vessel_info(w, Lib.VesselID(w), 0);
+          }
+          // create indirect link data
+          conn = new ConnectionInfo(wi.connection);
+
+          // update the link data and return it
+          conn.status = LinkStatus.indirect_link;
+          conn.rate = Math.Min(conn.rate, rate);
+          conn.cost = antenna.direct_cost;
+          conn.relaycost = antenna.indirect_cost;
+          conn.path.Add(w);
+          connections.Add(conn);
+        }
+        return connections[0];
+      }
+      // no link
+      return new ConnectionInfo(LinkStatus.no_link);
     }
     // the simple stupid signal system
     else

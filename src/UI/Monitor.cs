@@ -216,7 +216,7 @@ public sealed class Monitor
     if (Features.Reliability) indicator_reliability(p, v, vi);
 
     // signal indicator
-    if (Features.Signal) indicator_signal(p, v, vi);
+    if (Features.Signal || Features.KCommNet) indicator_signal(p, v, vi);
 
     // done
     return true;

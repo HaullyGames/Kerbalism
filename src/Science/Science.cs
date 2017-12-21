@@ -52,6 +52,12 @@ public static class Science
     // consume ec if data is transmitted or relayed
     if (vi.transmitting.Length > 0 || vi.relaying.Length > 0)
     {
+      if (Features.KCommNet)
+      {
+        // This means that is using only as Relay
+        if (vi.relaying.Length > 0 && vi.transmitting.Length == 0) resources.Consume(v, "ElectricCharge", conn.relaycost * elapsed_s);
+        else resources.Consume(v, "ElectricCharge", conn.cost * elapsed_s);
+      }
       resources.Consume(v, "ElectricCharge", conn.cost * elapsed_s);
     }
 

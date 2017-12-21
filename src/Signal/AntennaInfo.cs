@@ -30,7 +30,7 @@ public sealed class AntennaInfo
         {
           if (a.CanComm())
           {
-            //Try get Trasmitter(CommNet)
+            // Try get Trasmitter(CommNet)
             KCOMMNET.NetworkAdaptor transmitter = a.part.FindModuleImplementing<KCOMMNET.NetworkAdaptor>();
             if (transmitter != null)
             {
@@ -42,11 +42,15 @@ public sealed class AntennaInfo
 
               if (!Settings.ExtendedAntenna && !extended) continue;
 
-              type.Add(a.antennaType == global::AntennaType.RELAY ? AntennaType.low_gain : AntennaType.high_gain);
+              bool antenna_is_relay = a.antennaType == global::AntennaType.RELAY;
+
+              type.Add(antenna_is_relay ? AntennaType.low_gain : AntennaType.high_gain);
               cost.Add(transmitter.ecCost);
               rate.Add(transmitter.rate);
+              relay.Add(antenna_is_relay);
+              is_relay |= antenna_is_relay;
               direct_cost += transmitter.ecCost;
-              if (a.antennaType == global::AntennaType.RELAY) indirect_cost += transmitter.ecCost;
+              if (antenna_is_relay) indirect_cost += transmitter.ecCost;
             }
           }
           no_antenna = false;
@@ -85,7 +89,7 @@ public sealed class AntennaInfo
           Part part_prefab = PartLoader.getPartInfoByName(p.partName).partPrefab;
 
           // get module prefab
-          ModuleDataTransmitter a = part_prefab.FindModuleImplementing<ModuleDataTransmitter>();
+          KCOMMNET.NetworkAdaptor a = part_prefab.FindModuleImplementing<KCOMMNET.NetworkAdaptor>();
 
           // if there is none, skip the part
           if (a == null) continue;
@@ -94,13 +98,13 @@ public sealed class AntennaInfo
           foreach (ProtoPartModuleSnapshot m in p.modules)
           {
             // we are only interested in antennas
-            if (m.moduleName != "ModuleDataTransmitter") continue;
+            if (m.moduleName != "NetworkAdaptor") continue;
 
             // if the module is disabled, skip it
             if (!Lib.Proto.GetBool(m, "isEnabled")) continue;
 
             ProtoPartModuleSnapshot deployState = FlightGlobals.FindProtoPartByID(p.flightID).FindModule("ModuleDeployableAntenna");
-            ProtoPartModuleSnapshot netAdaptor = FlightGlobals.FindProtoPartByID(p.flightID).FindModule("NetworkAdaptor");
+            ProtoPartModuleSnapshot transmitter = FlightGlobals.FindProtoPartByID(p.flightID).FindModule("ModuleDataTransmitter");
 
             if (deployState != null)
             {
@@ -108,15 +112,19 @@ public sealed class AntennaInfo
               if (Lib.Proto.GetString(deployState, "deployState") != "EXTENDED" && !Settings.ExtendedAntenna) continue;
             }
 
-            bool antenna_is_relay = a.antennaType == global::AntennaType.RELAY;
+            if (!Lib.Proto.GetBool(transmitter, "canComm")) continue;
 
-            type.Add(a.antennaType == global::AntennaType.RELAY ? AntennaType.low_gain : AntennaType.high_gain);
-            cost.Add(Lib.Proto.GetDouble(netAdaptor, "ecCost"));
-            rate.Add(Lib.Proto.GetDouble(netAdaptor, "rate"));
-            direct_cost += Lib.Proto.GetDouble(netAdaptor, "ecCost");
-            if (a.antennaType == global::AntennaType.RELAY) indirect_cost += Lib.Proto.GetDouble(netAdaptor, "ecCost");
-            no_antenna = false;
+            bool antenna_is_relay = Lib.Proto.GetString(transmitter, "antennaType") == "RELAY";
+
+            type.Add(antenna_is_relay ? AntennaType.low_gain : AntennaType.high_gain);
+            cost.Add(a.ecCost);
+            rate.Add(a.rate);
+            relay.Add(antenna_is_relay);
+            is_relay |= antenna_is_relay;
+            direct_cost += a.ecCost;
+            if (antenna_is_relay) indirect_cost += a.ecCost;
           }
+          no_antenna = false;
         }
       }
       else
