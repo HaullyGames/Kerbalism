@@ -4,7 +4,7 @@
   // CNConstellationModule
   public class LanManager : PartModule
   {
-    [KSPEvent(guiActive = true, guiActiveEditor = false, guiActiveUnfocused = true, guiName = "Network Setup", active = true)]
+    [KSPEvent(guiActive = true, guiActiveEditor = false, guiActiveUnfocused = true, guiName = "Network Setup", active = false)]
     public void KSPEventVesselSetup()
     {
       // NEED IMPLEMENT

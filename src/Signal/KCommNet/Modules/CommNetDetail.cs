@@ -16,22 +16,23 @@ namespace KCOMMNET
     {
       if (KERBALISM.Lib.IsFlight())
       {
-        CommNode node = vessel.connection.Comm;
-        if(node!=null)
+        if (vessel == FlightGlobals.ActiveVessel)
         {
-          AntennaInfo antennaInfo = new AntennaInfo(node);
-          GetPower = KSPUtil.PrintSI(antennaInfo.AntennaRange, string.Empty, 3, false);
+          CommNode node = vessel.connection.Comm;
+          if (node != null)
+          {
+            AntennaInfo antennaInfo = new AntennaInfo(node);
+            GetPower = KSPUtil.PrintSI(antennaInfo.AntennaRange, string.Empty, 3, false);
+
+            if(vessel.connection.IsConnected)
+            {
+              // NEED FIX: vessel.connection.ControlPath.First.b.antennaRelay.power needs to be replaced, it is a cache value.
+              maxDistHop = KSPUtil.PrintSI(Math.Sqrt(antennaInfo.AntennaRange * vessel.connection.ControlPath.First.end.antennaRelay.power), string.Empty, 3, false);
+              Events["maxDistHop"].guiActive = true;
+            }
+            else Events["maxDistHop"].guiActive = false;
+          }
         }
-
-
-        //CommPath cPath = new CommPath();
-        //if (KERBALISM.Kerbalism.KCommNet.FindClosestControlSource(antennaInfo., cPath))
-        //{
-        //  // NEED FIX: vessel.connection.ControlPath.First.b.antennaRelay.power needs to be replaced, it is a cache value.
-        //  //maxDistHop = KSPUtil.PrintSI(Math.Sqrt(antennaInfo.AntennaRange * cPath.First.b.antennaRelay.power), string.Empty, 3, false);
-        //  Events["maxDistHop"].guiActive = true;
-        //}
-        else Events["maxDistHop"].guiActive = false;
       }
     }
   }

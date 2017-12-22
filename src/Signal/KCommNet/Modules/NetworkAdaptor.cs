@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using KERBALISM;
 
 namespace KCOMMNET
 {
@@ -12,7 +12,10 @@ namespace KCOMMNET
     [KSPField] public double rate;                              // transmission rate at zero distance in Mb/s
     public Guid Target = Guid.Empty;
 
-    [KSPEvent(guiActive = true, guiActiveEditor = true, guiActiveUnfocused = true, guiName = "Antenna Setup", active = true)]
+    [KSPField(guiName = "Bandwidth", guiUnits = "", guiActive = false, guiFormat = "")]
+    string Rate;
+
+    [KSPEvent(guiActive = true, guiActiveEditor = true, guiActiveUnfocused = true, guiName = "Antenna Setup", active = false)]
     public void KSPEventAntennaConfig()
     {
       // NEED IMPLEMENT
@@ -24,10 +27,24 @@ namespace KCOMMNET
     public override void OnStart(StartState state)
     {
       if (state == StartState.Editor && state == StartState.None && state == StartState.PreLaunch) return;
+      
       transmitter = part.FindModuleImplementing<ModuleDataTransmitter>();
 
-      // I hide it because if don't show the antenna power X rangeModifier
-      transmitter.Fields["powerText"].guiActive = false;
+      if (transmitter!=null)
+      {
+        // I hide it because if don't show the antenna power X rangeModifier
+        transmitter.Fields["powerText"].guiActive = false;
+        transmitter.Fields["statusText"].guiActive = false;
+        transmitter.Events["StartTransmission"].active = false;
+        transmitter.Events["TransmitIncompleteToggle"].active = false;
+
+        // Show transmissiter rate
+        if (transmitter.antennaType != global::AntennaType.INTERNAL)
+        {
+          Rate = Lib.HumanReadableDataRate(rate);
+          Fields["Rate"].guiActive = true;
+        }
+      }
       base.OnStart(state);
     }
   }
