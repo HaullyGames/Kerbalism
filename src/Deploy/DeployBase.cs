@@ -11,7 +11,7 @@ namespace KERBALISM
     [KSPField(isPersistant = true)] public double ecCost = 0;                 // ecCost to keep the part active
     [KSPField] public double ecDeploy = 0;                                    // ecCost to do a deploy(animation)
 
-    [KSPField(guiName = "EC Usage", guiUnits = "/sec", guiActive = true, guiFormat = "F2")]
+    [KSPField(guiName = "EC Usage", guiUnits = "/sec", guiActive = false, guiFormat = "F2")]
     public double actualECCost = 0;                                           // Show EcConsume on part display
 
     [KSPField(isPersistant = true)] 

@@ -38,6 +38,12 @@
       else if (Features.KCommNet)
       {
         if (stockAnim != null) pModule = stockAnim;
+
+        // Show transmissiter rate
+        if (transmitter.antennaType != global::AntennaType.INTERNAL)
+        {
+          Fields["actualECCost"].guiActive = true;
+        }
       }
 
       base.OnStart(state);
@@ -61,7 +67,7 @@
         }
 
         base.Update();
-        if (isTransmitting)
+        if (isTransmitting && isConsuming)
         {
           if (Features.Signal) actualECCost = antenna.cost;
           else if (Features.KCommNet)
