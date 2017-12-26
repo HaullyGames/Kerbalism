@@ -151,6 +151,12 @@ public sealed class Sensor : PartModule, ISpecifics
     }
     return string.Empty;
   }
+
+  // get readings short text info
+  public static string netadaptor_content(Vessel v, double rate)
+  {
+    return Lib.HumanReadableDataRate(rate);
+  }
 }
 
 

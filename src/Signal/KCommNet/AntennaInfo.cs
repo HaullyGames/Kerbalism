@@ -27,15 +27,6 @@ namespace KCOMMNET
 
       double AntennaXModified;                                                                                    //  (AntennaPower || RelayPower) * rangeModifier
 
-      //  Kerbalism
-      //  initialize data
-      type = new List<AntennaType>();
-      ecCost = new List<double>();
-      rate = new List<double>();
-      antennaPower = new List<double>();
-      relay = new List<bool>();
-      no_antenna = true;
-
       if (node.isHome)
       {
         RelayRange = node.antennaRelay.power;
@@ -205,14 +196,5 @@ namespace KCOMMNET
     public List<ModuleDataTransmitter> ListAntenna = new List<ModuleDataTransmitter>();                           //  List of antennas
 
     public static float rangeModifier = HighLogic.fetch.currentGame.Parameters.CustomParams<CommNetParams>().rangeModifier;   //  CommNet Range Modifier
-
-    //  Kerbalism
-    List<AntennaType> type;
-    List<double> ecCost;                                                                                           //  TODO: implement ecCost to NetworkAdaptor module.
-    List<double> rate;
-    List<double> antennaPower;
-    List<bool> relay;
-
-    public bool no_antenna;
   }
 }

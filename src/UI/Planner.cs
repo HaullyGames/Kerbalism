@@ -1187,8 +1187,7 @@ public class resource_simulator
   {
     resource("ElectricCharge").consume(antenna.cost, "transmission");
   }
-
-
+ 
   void process_experiment(Experiment exp)
   {
     if (exp.recording)

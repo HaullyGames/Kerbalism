@@ -77,8 +77,20 @@ public sealed class Panel
     }
   }
 
+  public void selector(string label, string value = "", string tooltip = "", Action click = null, Action hover = null)
+  {
+    Entry e = new Entry();
+    e.label = label;
+    e.value = value;
+    e.tooltip = tooltip;
+    e.click = click;
+    e.hover = hover;
+    e.icons = new List<Icon>();
+    if (sections.Count > 0) sections[sections.Count - 1].entries.Add(e);
+  }
 
-  public void render()
+
+    public void render()
   {
     // headers
     foreach(Header h in headers)

@@ -11,7 +11,8 @@ public enum MonitorPage
   telemetry,
   data,
   scripts,
-  config
+  config,
+  net
 }
 
 
@@ -107,6 +108,7 @@ public sealed class Monitor
         case MonitorPage.telemetry: panel.telemetry(selected_v); break;
         case MonitorPage.data: panel.fileman(selected_v); break;
         case MonitorPage.scripts: panel.devman(selected_v); break;
+        case MonitorPage.net: panel.network(selected_v); break;
         case MonitorPage.config: panel.config(selected_v); break;
       }
     }
@@ -243,6 +245,10 @@ public sealed class Monitor
       if (Lib.IsClicked()) page = MonitorPage.scripts;
       else if (Lib.IsClicked(2)) UI.open((p) => p.devman(v));
     }
+    GUILayout.Label(new GUIContent(page == MonitorPage.net ? " <color=#00ffff>NET</color> " : " NET ", Icons.small_info, "Network readings" + tooltip), config_style);
+    if (Lib.IsClicked()) page = MonitorPage.net;
+    else if (Lib.IsClicked(2)) UI.open((p) => p.network(v));
+
     GUILayout.Label(new GUIContent(page == MonitorPage.config ? " <color=#00ffff>CFG</color> " : " CFG ", Icons.small_config, "Configure the vessel" + tooltip), config_style);
     if (Lib.IsClicked()) page = MonitorPage.config;
     else if (Lib.IsClicked(2)) UI.open((p) => p.config(v));

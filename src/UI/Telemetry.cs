@@ -48,7 +48,6 @@ public static class Telemetry
     if (v.isEVA) p.collapse("EVA SUIT");
   }
 
-
   static void render_environment(Panel p, Vessel v, vessel_info vi)
   {
     // don't show env panel in eva kerbals
@@ -133,7 +132,6 @@ public static class Telemetry
       ++supplies;
     }
   }
-
 
   static void render_crew(Panel p, List<ProtoCrewMember> crew)
   {

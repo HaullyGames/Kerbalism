@@ -7,7 +7,7 @@ namespace KCOMMNET
   // CNConstellationAntennaModule
   public class NetworkAdaptor : PartModule
   {
-    [KSPField(isPersistant = true)] public uint frequency;
+    [KSPField(isPersistant = true)] public uint frequency = 0;
     [KSPField] public double ecCost;                            // cost of transmission in EC/s
     [KSPField] public double rate;                              // transmission rate at zero distance in Mb/s
     public Guid Target = Guid.Empty;
