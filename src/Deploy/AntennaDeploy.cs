@@ -45,7 +45,6 @@
           Fields["actualECCost"].guiActive = true;
         }
       }
-
       base.OnStart(state);
     }
 

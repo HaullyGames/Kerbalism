@@ -39,7 +39,9 @@ public sealed class AntennaDevice : Device
     if (Features.KCommNet)
     {
       return stockAnim == null
+        ? has_ec
         ? "fixed"
+        : "<color=orange>inactive</color>"
         : stockAnim.deployState == ModuleDeployablePart.DeployState.EXTENDED
         ? has_ec
         ? "<color=cyan>deployed</color>"
@@ -132,7 +134,9 @@ public sealed class ProtoAntennaDevice : Device
   {
     if (Features.KCommNet)
       return animator == null
+       ? has_ec
        ? "fixed"
+       : "<color=orange>inactive</color>"
        : Lib.Proto.GetString(animator, "deployState") == "EXTENDED"
        ? has_ec
        ? "<color=cyan>deployed</color>"

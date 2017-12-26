@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace KCOMMNET
 {
   // This class is the key that allows to break into and customise KSP's CommNet. This is possibly the secondary model in the Model–view–controller sense
-  //[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] { GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.EDITOR })]
+  [KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] { GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.EDITOR })]
   public class KCommNetScenario : CommNetScenario
   {
     // Note:

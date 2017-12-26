@@ -840,21 +840,45 @@ public sealed class vessel_analyzer
         // antenna
         // - we consider them even if not extended, for ease of use
         //   and because of module animator behaviour in editor
-        if (m.moduleName == "Antenna")
+        if(Features.KCommNet)
         {
-          Antenna antenna = m as Antenna;
-
-          // calculate direct range/rate/cost
-          direct_dist = Math.Max(direct_dist, antenna.dist);
-          direct_rate += Antenna.calculate_rate(home_dist_min, antenna.dist, antenna.rate);
-          direct_cost += antenna.cost;
-
-          // calculate indirect range/rate/cost
-          if (antenna.type == AntennaType.low_gain)
+          if (m.moduleName == "NetworkAdaptor")
           {
-            indirect_dist = Math.Max(indirect_dist, antenna.dist);
-            indirect_rate += antenna.rate; //< best case
-            indirect_cost += antenna.cost;
+            KCOMMNET.NetworkAdaptor antenna = m as KCOMMNET.NetworkAdaptor;
+            ModuleDataTransmitter transmitter = p.FindModuleImplementing<ModuleDataTransmitter>();
+
+            // calculate direct range/rate/cost
+            direct_dist = Math.Max(direct_dist, transmitter.antennaPower);
+            direct_rate += Antenna.calculate_rate(home_dist_min, transmitter.antennaPower, antenna.rate);   //TODO: I need to fix the formula
+            direct_cost += antenna.ecCost;
+
+            // calculate indirect range/rate/cost
+            if (transmitter.antennaType == global::AntennaType.RELAY)
+            {
+              indirect_dist = Math.Max(indirect_dist, transmitter.antennaPower);
+              indirect_rate += antenna.rate; //< best case
+              indirect_cost += antenna.ecCost;
+            }
+          }
+        }
+        else
+        { 
+          if (m.moduleName == "Antenna")
+          {
+            Antenna antenna = m as Antenna;
+
+            // calculate direct range/rate/cost
+            direct_dist = Math.Max(direct_dist, antenna.dist);
+            direct_rate += Antenna.calculate_rate(home_dist_min, antenna.dist, antenna.rate);
+            direct_cost += antenna.cost;
+
+            // calculate indirect range/rate/cost
+            if (antenna.type == AntennaType.low_gain)
+            {
+              indirect_dist = Math.Max(indirect_dist, antenna.dist);
+              indirect_rate += antenna.rate; //< best case
+              indirect_cost += antenna.cost;
+            }
           }
         }
       }

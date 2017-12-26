@@ -37,8 +37,6 @@ namespace KERBALISM
         }
         isActionGroupchanged = false;
       }
-
-      Fields["actualECCost"].guiActive = Features.Deploy;
     }
 
     public virtual void Update()

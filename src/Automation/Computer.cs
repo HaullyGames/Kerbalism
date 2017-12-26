@@ -17,7 +17,7 @@ public enum ScriptType
   power_low   = 7,      // called when ec level goes below 15%
   rad_low     = 8,      // called when radiation goes below 0.05 rad/h
   rad_high    = 9,      // called when radiation goes above 0.05 rad/h
-  linked      = 10,      // called when signal is regained
+  linked      = 10,     // called when signal is regained
   unlinked    = 11,     // called when signal is lost
   eva_out     = 12,     // called when going out on eva
   eva_in      = 13,     // called when coming back from eva

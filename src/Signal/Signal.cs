@@ -300,8 +300,6 @@ public static class Signal
       // Update ControlStatus every NetWorkingUpdate for all vessels
       vessel.UpdateControl(true);
 
-      bool visible;
-
       // store other data
       double rate;
       List<ConnectionInfo> connections = new List<ConnectionInfo>();
@@ -349,7 +347,4 @@ public static class Signal
     }
   }
 }
-
-
-} // KERBALISM
-
+}
