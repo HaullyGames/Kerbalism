@@ -10,7 +10,7 @@ namespace KCOMMNET
 {
   public class KCommNetHome : CommNetHome, IComparable<KCommNetHome>
   {
-    static readonly Texture markTexture = Icons.brain_white;
+    static readonly Texture markTexture = Icons.home;
     static GUIStyle groundStationHeadline;
     bool loadCompleted = false;
 
@@ -89,9 +89,10 @@ namespace KCOMMNET
         headlineRect.height = nameDim.y;
         GUI.Label(headlineRect, stationName, KCommNetHome.groundStationHeadline);
 
-        ////frequency list
-        //string freqStr = "No frequency assigned";
+        //frequency list
+        string freqStr = "No frequency assigned";
 
+        // TODO: Implement Frequency
         //if (Frequencies.Count > 0)
         //{
         //  freqStr = "Broadcasting in";
@@ -132,9 +133,7 @@ namespace KCOMMNET
       return false;
     }
 
-    /// <summary>
-    /// Allow to be sorted easily
-    /// </summary>
+    // Allow to be sorted easily
     public int CompareTo(KCommNetHome other)
     {
       return stationName.CompareTo(other.stationName);
