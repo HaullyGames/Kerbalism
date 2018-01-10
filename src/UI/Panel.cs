@@ -15,7 +15,7 @@ public sealed class Panel
     sections = new List<Section>();
     callbacks = new List<Action>();
     win_title = string.Empty;
-    min_width = 260.0f;
+    min_width = 360.0f;
   }
 
   public void clear()
@@ -23,7 +23,7 @@ public sealed class Panel
     headers.Clear();
     sections.Clear();
     win_title = string.Empty;
-    min_width = 260.0f;
+    min_width = 360.0f;
   }
 
   public void header(string label, string tooltip="", Action click=null)
@@ -89,8 +89,7 @@ public sealed class Panel
     if (sections.Count > 0) sections[sections.Count - 1].entries.Add(e);
   }
 
-
-    public void render()
+  public void render()
   {
     // headers
     foreach(Header h in headers)

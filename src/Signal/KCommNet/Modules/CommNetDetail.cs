@@ -22,15 +22,17 @@ namespace KCOMMNET
           if (node != null)
           {
             AntennaInfo antennaInfo = new AntennaInfo(node);
-            GetPower = KSPUtil.PrintSI(antennaInfo.AntennaRange, string.Empty, 3, false);
-
-            if(vessel.connection.IsConnected)
+            if (antennaInfo != null)
             {
-              // NEED FIX: vessel.connection.ControlPath.First.b.antennaRelay.power needs to be replaced, it is a cache value.
-              maxDistHop = KSPUtil.PrintSI(Math.Sqrt(antennaInfo.AntennaRange * vessel.connection.ControlPath.First.end.antennaRelay.power), string.Empty, 3, false);
-              Events["maxDistHop"].guiActive = true;
+              GetPower = KSPUtil.PrintSI(antennaInfo.AntennaRange, string.Empty, 3, false);
+
+              if (vessel.connection.IsConnected)
+              {
+                // NEED FIX: vessel.connection.ControlPath.First.b.antennaRelay.power needs to be replaced, it is a cache value.
+                maxDistHop = KSPUtil.PrintSI(Math.Sqrt(antennaInfo.AntennaRange * vessel.connection.ControlPath.First.end.antennaRelay.power), string.Empty, 3, false);
+              }
+              else maxDistHop = "";
             }
-            else Events["maxDistHop"].guiActive = false;
           }
         }
       }

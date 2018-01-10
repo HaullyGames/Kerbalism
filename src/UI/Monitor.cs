@@ -252,6 +252,7 @@ public sealed class Monitor
     GUILayout.Label(new GUIContent(page == MonitorPage.config ? " <color=#00ffff>CFG</color> " : " CFG ", Icons.small_config, "Configure the vessel" + tooltip), config_style);
     if (Lib.IsClicked()) page = MonitorPage.config;
     else if (Lib.IsClicked(2)) UI.open((p) => p.config(v));
+
     GUILayout.Label(new GUIContent(" GROUP ", Icons.small_search, "Organize in groups"), config_style);
     vd.group = Lib.TextFieldPlaceholder("Kerbalism_group", vd.group, "NONE", group_style).ToUpper();
     GUILayout.EndHorizontal();

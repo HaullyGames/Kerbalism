@@ -12,6 +12,9 @@ namespace KCOMMNET
     [KSPField] public double rate;                              // transmission rate at zero distance in Mb/s
     public Guid Target = Guid.Empty;
 
+    [KSPField(guiName = "Antenna Power", guiUnits = "", guiActive = false, guiFormat = "")]
+    string power;
+
     [KSPField(guiName = "Bandwidth", guiUnits = "", guiActive = false, guiFormat = "")]
     string Rate;
 
@@ -42,7 +45,9 @@ namespace KCOMMNET
         if (transmitter.antennaType != global::AntennaType.INTERNAL)
         {
           Rate = Lib.HumanReadableDataRate(rate);
+          power = KSPUtil.PrintSI(transmitter.antennaPower * AntennaInfo.rangeModifier, string.Empty, 3, false);
           Fields["Rate"].guiActive = true;
+          Fields["power"].guiActive = true;
         }
       }
       base.OnStart(state);

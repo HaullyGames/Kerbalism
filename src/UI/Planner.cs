@@ -848,7 +848,7 @@ public sealed class vessel_analyzer
             ModuleDataTransmitter transmitter = p.FindModuleImplementing<ModuleDataTransmitter>();
 
             // calculate direct range/rate/cost
-            direct_dist = Math.Max(direct_dist, transmitter.antennaPower);
+            direct_dist = Math.Max(direct_dist, transmitter.antennaPower * KCOMMNET.AntennaInfo.rangeModifier);
             direct_rate += Antenna.calculate_rate(home_dist_min, transmitter.antennaPower, antenna.rate);   //TODO: I need to fix the formula
             direct_cost += antenna.ecCost;
 

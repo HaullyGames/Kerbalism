@@ -335,7 +335,7 @@ public static class Signal
           conn.path.Add(w);
           connections.Add(conn);
         }
-        return connections[0];
+        if(connections[0].rate> 0.0) return connections[0];
       }
       // no link
       return new ConnectionInfo(LinkStatus.no_link);
