@@ -9,7 +9,7 @@ namespace KCOMMNET
   {
     public void copyOf(CommNetBody stockBody)
     {
-      Lib.Log("CommNet Body "+ stockBody.name+" added");
+      Lib.Log("CommNet Body " + stockBody.name + " added");
 
       body = stockBody.GetComponentInChildren<CelestialBody>();
     }
